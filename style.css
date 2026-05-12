@@ -35,6 +35,7 @@ body {
 }
 .register-button:hover{
     background-color: #8B5CF6;
+    color: #F8FAFC;
 }
 .navbar-nav .nav-link{
     font-family: 'Montserrat', sans-serif;
@@ -47,7 +48,6 @@ body {
     
 }
 .nav-link:hover, .nav-link.active{
-    color: #8B5CF6;
     transition: all 0.3s ease-in-out;
     color: #F8FAFC;
 }
@@ -78,21 +78,4 @@ nav{
 
 .text-accent {
     color: #8B5CF6 !important;
-}
-
-.bg-accent {
-    background-color: #8B5CF6 !important;
-}
-
-.border-accent {
-    border-color: #8B5CF6 !important;
-}
-
-.card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
