@@ -2,20 +2,26 @@
 <html lang="en">
 <head>
     <title>taskU</title>
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    
     
 </head>
-<body>
-    <nav class="navbar navbar-dark navbar-expand-lg fixed-top p-3 border-bottom border-secondary rounded-3">
+<body data-bs-spy="scroll" data-bs-target="#navbar" data-bs-offset="50">
+    <nav id="navbar" class="navbar navbar-dark navbar-expand-lg fixed-top p-3 border-bottom border-secondary rounded-3">
         <div class="container-fluid px-4">
             <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16" style=" color: #8B5CF6;">
                 <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0"/>
                 <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"/>
             </svg>
-            <a class="navbar-brand me-auto mx-lg-2"  style="font-family: Montserrat-bold; font-size: 30px; color: #F8FAFC;" >taskU.</a>
-                <div class="offcanvas-body">
+            <a class="navbar-brand me-auto mx-lg-2"  style='font-family: Montserrat, sans-serif; font-weight: 700; font-size: 30px; color: #F8FAFC;' >taskU.</a>
+            
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav justify-content-center flex-grow-1 pe-3">
                         <li class="nav-item">
                             <a class="nav-link active" href="#index" data-section="index">Home</a>
@@ -109,31 +115,5 @@
         <p class="text-secondary mb-0">&copy; 2026 taskU. All rights reserved.</p>
     </div>
 </footer>
-
-
-    <!-- bootstrap JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
-</script>
-<script>
-    const navLinks = document.querySelectorAll('.nav-link[data-section]');
-    const sections = document.querySelectorAll('section[id]');
- 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Hapus active dari semua link
-                navLinks.forEach(link => link.classList.remove('active'));
-                // Tambah active ke link section
-                const activeLink = document.querySelector(`.nav-link[data-section="${entry.target.id}"]`);
-                if (activeLink) activeLink.classList.add('active');
-            }
-        });
-    }, 
-    {
-            threshold: 0.5
-    });
-    sections.forEach(section => observer.observe(section));
-</script>
-    
 </body>
 </html>
