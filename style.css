@@ -49,7 +49,6 @@ body {
 }
 .nav-link:hover, .nav-link.active{
     transition: all 0.3s ease-in-out;
-    color: #F8FAFC;
 }
 .nav-link::after{
     content: "";
@@ -78,4 +77,384 @@ nav{
 
 .text-accent {
     color: #8B5CF6 !important;
+
 }
+
+.bg-accent {
+    background-color: #8B5CF6 !important;
+}
+
+.border-accent {
+    border-color: #8B5CF6 !important;
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================================
+   DESIGN TOKENS
+============================================================ */
+:root {
+  --bg-base:        #0F172A;
+  --bg-surface:     #1E293B;
+  --bg-card:        #1E293B;
+  --bg-card-hover:  #334155;
+  --bg-input:       #0F172A;
+  --accent:         #8B5CF6;
+  --accent-hover:   #7C3AED;
+  --accent-soft:    rgba(139,92,246,0.15);
+  --text-primary:   #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted:     #475569;
+  --border:         rgba(255,255,255,0.07);
+  --border-accent:  rgba(139,92,246,0.3);
+  --danger:         #e05c6a;
+  --tag-penting:    #e05c6a;
+  --tag-opsional:   #f5a623;
+  --tag-tambahan:   #4ecdc4;
+}
+
+*, *::before, *::after { 
+  box-sizing: border-box; 
+}
+
+/* KOMPONEN DASHBOARD */
+
+.navbar-brand {
+  font-family: Montserrat-bold; 
+  font-size: 30px; 
+  color: #F8FAFC;
+}
+.brand-icon {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; color: #fff;
+  background-color: var(--accent);
+}
+
+.nav-label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ─── PROFILE BUTTON ─── */
+.profile-btn {
+  display: flex; align-items: center; gap: 10px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 50px;              
+  padding: 5px 14px 5px 7px;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 0.875rem; font-weight: 500;
+  transition: all 0.3s ease-in-out; 
+}
+.profile-btn:hover {
+  background-color: var(--bg-card-hover);
+  border-color: var(--accent);      
+}
+
+.profile-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-accent);
+  background: var(--accent-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem;
+  color: var(--accent);             
+}
+
+/* ─── PROFILE DROPDOWN ─── */
+.profile-dropdown {
+  position: absolute; top: calc(100% + 8px); right: 0;
+  background: var(--bg-card);       
+  border: 1px solid var(--border);
+  border-radius: 12px; min-width: 182px; padding: 6px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.4);
+  opacity: 0; pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity .18s, transform .18s;
+  z-index: 2000;
+}
+.profile-dropdown.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+.dd-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 8px;
+  font-size: 0.875rem; cursor: pointer;
+  color: var(--text-secondary);
+  transition: background .15s, color .15s;
+  border: none; background: none; width: 100%;
+}
+.dd-item:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+.dd-item.danger:hover { background: rgba(224,92,106,.12); color: var(--danger); }
+
+/* ─── MAIN BODY ─── */
+.app-body {
+  padding: 1.5rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-top: 100px;
+}
+
+/* ─── CALENDAR CARD ─── */
+.cal-card {
+  background-color: var(--bg-surface);  
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  height: 100%;
+}
+
+/* ─── FLATPICKR DARK THEME ─── */
+.flatpickr-calendar {
+  background: transparent !important;
+  border: none !important; 
+  box-shadow: none !important;
+  width: 100% !important;
+}
+.flatpickr-months {
+  display: flex; align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+.flatpickr-month {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+  height: auto !important; line-height: 1 !important; flex: 1;
+}
+.flatpickr-current-month {
+  font-size: 1rem !important; font-weight: 600 !important;
+  color: var(--text-primary) !important;
+  display: flex !important; align-items: center !important;
+  justify-content: center !important; gap: 6px !important;
+  padding: 0 !important; width: 100% !important;
+  position: static !important; transform: none !important; left: auto !important;
+}
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+  font-size: 0.95rem !important; font-weight: 600 !important;
+  padding: 2px 4px !important; cursor: pointer;
+}
+.flatpickr-current-month .numInputWrapper {
+  display: inline-flex !important; align-items: center !important;
+}
+.flatpickr-current-month .numInputWrapper input {
+  color: var(--text-primary) !important;
+  font-size: 0.95rem !important; font-weight: 600 !important;
+  width: 52px !important; background: transparent !important;
+  border: none !important; outline: none !important;
+}
+.flatpickr-current-month .numInputWrapper span { display: none !important; }
+.flatpickr-prev-month, .flatpickr-next-month {
+  color: var(--text-secondary) !important; fill: var(--text-secondary) !important;
+  padding: 4px 10px !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+  border-radius: 6px !important; cursor: pointer;
+  transition: all 0.3s ease-in-out; 
+  position: static !important; top: auto !important; height: auto !important;
+}
+.flatpickr-prev-month:hover, .flatpickr-next-month:hover {
+  color: var(--text-primary) !important; fill: var(--text-primary) !important;
+  background: var(--bg-card-hover) !important;
+}
+.flatpickr-prev-month svg, .flatpickr-next-month svg { width: 14px; height: 14px; }
+
+.flatpickr-innerContainer,
+.flatpickr-rContainer,
+.flatpickr-days,
+.flatpickr-weekdays,
+.flatpickr-weekdaycontainer {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+}
+.flatpickr-weekdays {
+  background: transparent !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+.flatpickr-weekday {
+  background: transparent !important;
+  color: var(--text-secondary) !important;
+  font-size: 0.8rem !important; 
+  font-weight: 600 !important;
+}
+.flatpickr-days { width: 100% !important; }
+.dayContainer {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important;
+  justify-items: center !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+} 
+.flatpickr-day {
+  color: var(--text-primary) !important;
+  border-radius: 50% !important;
+  height: 38px !important; 
+  width: 38px !important; 
+  font-size: 0.9rem !important; 
+  border: none !important;
+  transition: all 0.3s ease-in-out !important; 
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 2px auto !important;
+}
+.flatpickr-day:hover { background: var(--bg-card-hover) !important; }
+.flatpickr-day.today {
+  background: var(--accent) !important; 
+  color: #fff !important; font-weight: 700 !important;
+}
+.flatpickr-day.today:hover { background: var(--accent-hover) !important; }
+.flatpickr-day.selected, .flatpickr-day.selected:hover {
+  background: var(--accent-soft) !important;
+  color: var(--accent) !important; font-weight: 700 !important; 
+}
+.flatpickr-day.today.selected { background: var(--accent) !important; color: #fff !important; }
+.flatpickr-day.prevMonthDay, .flatpickr-day.nextMonthDay {
+  color: var(--text-muted) !important; opacity: 0.5 !important;
+}
+.flatpickr-day.has-task { position: relative; }
+.flatpickr-day.has-task::after {
+  content: ''; position: absolute; bottom: 4px; left: 50%;
+  transform: translateX(-50%);
+  width: 4px; height: 4px;
+  background: var(--accent); 
+  border-radius: 50%;
+}
+.flatpickr-day.today.has-task::after,
+.flatpickr-day.selected.has-task::after { background: #fff; }
+
+/* ─── TASK CARD ─── */
+.task-card {
+  background-color: var(--bg-surface);  
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  height: 100%;
+  display: flex; flex-direction: column; gap: 1.1rem;
+}
+.task-panel-title {
+  font-size: 1.1rem; font-weight: 700;
+  text-align: center; color: var(--text-primary);
+}
+.task-date-label {
+  font-size: 0.78rem; color: var(--text-secondary);
+  font-weight: 500; margin-bottom: 6px;
+}
+
+.task-input {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 14px;
+  color: var(--text-primary);
+  font-size: 0.875rem; outline: none; width: 100%;
+  transition: all 0.3s ease-in-out; 
+}
+.task-input:focus { border-color: var(--accent); } 
+.task-input::placeholder { color: var(--text-muted); }
+
+.task-tag-select {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px;
+  color: var(--text-primary);
+  font-size: 0.8rem; outline: none; cursor: pointer; width: 100%;
+}
+.task-tag-select option { background: var(--bg-card); }
+
+.btn-add {
+  background-color: var(--accent); 
+  color: var(--text-primary);
+  border: none; border-radius: 50px; 
+  padding: 10px 22px;
+  font-weight: 600; font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out; 
+}
+.btn-add:hover { background-color: var(--bg-card-hover); } 
+
+/* ─── TASK LIST ─── */
+.task-group {
+  background: var(--bg-card); 
+  border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+}
+.task-group-header {
+  padding: 9px 14px;
+  font-size: 0.73rem; font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.task-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.3s ease; 
+}
+.task-item:last-child { border-bottom: none; }
+.task-item:hover { background: var(--bg-card-hover); }
+.task-item.completed .task-item-text {
+  text-decoration: line-through; color: var(--text-muted);
+}
+.task-item-left { display: flex; align-items: center; gap: 10px; }
+
+.custom-checkbox {
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--text-muted);
+  border-radius: 4px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all 0.3s ease-in-out;
+}
+.custom-checkbox.checked {
+  background: var(--accent); 
+  border-color: var(--accent); 
+}
+.custom-checkbox.checked::after { content: '✓'; font-size: 10px; color: #fff; font-weight: 700; }
+
+.task-item-text { font-size: 0.875rem; color: var(--text-primary); }
+
+.task-tag-badge {
+  font-size: 0.6rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .5px;
+  padding: 2px 6px; border-radius: 4px;
+}
+.tag-penting  { background: rgba(224,92,106,.15);  color: var(--tag-penting); }
+.tag-opsional { background: rgba(245,166,35,.15);  color: var(--tag-opsional); }
+.tag-tambahan { background: rgba(78,205,196,.15);  color: var(--tag-tambahan); }
+
+.btn-delete {
+  background: none; border: none;
+  color: var(--text-muted); cursor: pointer;
+  padding: 4px; border-radius: 6px; font-size: 0.875rem;
+  display: flex; align-items: center;
+  transition: all 0.3s ease-in-out; 
+}
+.btn-delete:hover { color: var(--danger); background: rgba(224,92,106,.1); }
+
+.task-empty {
+  text-align: center; padding: 2.5rem 1rem;
+  color: var(--text-muted); font-size: 0.875rem;
+}
+.task-empty i { font-size: 1.5rem; display: block; margin-bottom: 8px; }
+
+.task-list-scroll { max-height: 420px; overflow-y: auto; }
+.task-list-scroll::-webkit-scrollbar { width: 4px; }
+.task-list-scroll::-webkit-scrollbar-track { background: transparent; }
+.task-list-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
