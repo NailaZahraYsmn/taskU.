@@ -32,8 +32,8 @@
                     </ul>
                 </div>
             </div>
-            <a href="login.html" class="login-button">Masuk</a>
-            <a href="daftar.html" class="register-button">Daftar</a>
+            <a href="login.php" class="login-button">Masuk</a>
+            <a href="daftar.php" class="register-button">Daftar</a>
         </div>
     </nav>
 
@@ -43,7 +43,7 @@
             <h1 class="display-4 mb-4 mt-5">Kelola Tugas, Hidup Jadi Makin Simpel</h1>
             <p class="lead mb-4">taskU. adalah solusi total buat manajemen tugasmu. Tetap teratur, makin produktif, dan capai semua goals-mu dengan mudah.</p>
 
-            <a href="login.html" class="login-button h-10 w-20 d-inline-block"><b>Mulai Gratis</b></a>
+            <a href="login.php" class="login-button h-10 w-20 d-inline-block"><b>Mulai Gratis</b></a>
             <div class="row g-5 mt-2">
             <!-- Item 1 -->
             <div class="col-md-4">
