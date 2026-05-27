@@ -1,105 +1,3 @@
-body {
-    background-color: #0F172A;
-    color: #F8FAFC; 
-    margin: 0;
-    padding: 0;
-    min-height: 100vh; 
-    font-family: 'Montserrat', sans-serif;
-}
-.login-button{
-    background-color:#8B5CF6;
-    color: #F8FAFC;
-    padding: 8px 20px;
-    border-radius: 50px;
-    font-size: 15px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-}
-.login-button:hover{
-    background-color: #334155;
-    
-}
-.register-button{
-    background-color:#1E293B;
-    color: #F8FAFC;
-    padding: 8px 20px;
-    margin-left: 10px;
-    border-radius: 50px;
-    font-size: 15px;
-    text-decoration: none;
-    cursor: pointer;
-    border: solid#8B5CF6;
-    border-width: 1px;
-    transition: all 0.3s ease-in-out;
-}
-.register-button:hover{
-    background-color: #8B5CF6;
-    color: #F8FAFC;
-}
-.navbar-nav .nav-link{
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    font-size: 1.1rem;
-    position: relative;
-    padding: 5px 10px;
-    transition: all 0.3s ease-in-out;
-    color:#F8FAFC;
-    
-}
-.nav-link:hover, .nav-link.active{
-    transition: all 0.3s ease-in-out;
-}
-.nav-link::after{
-    content: "";
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: 0;
-    left: 0;
-    background-color: #8B5CF6;
-    transition: all 0.3s ease-in-out;
-}
-.nav-link:hover::after, .nav-link.active::after{
-    width: 100%;
-}
-
-nav{
-    background-color: #1E293B;
-    --bs-nav-link-color: #F8FAFC;
-    --bs-nav-link-hover-color: #8B5CF6; 
-    --bs-navbar-active-color: #F8FAFC;
-}
-
-.bg-surface {
-    background-color: #1E293B !important;
-}
-
-.text-accent {
-    color: #8B5CF6 !important;
-
-}
-
-.bg-accent {
-    background-color: #8B5CF6 !important;
-}
-
-.border-accent {
-    border-color: #8B5CF6 !important;
-}
-
-.card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-/* ============================================================
-   DESIGN TOKENS
-============================================================ */
 :root {
   --bg-base:        #0F172A;
   --bg-surface:     #1E293B;
@@ -117,9 +15,101 @@ nav{
   --danger:         #e05c6a;
   --tag-penting:    #e05c6a;
   --tag-opsional:   #f5a623;
-  --tag-tambahan:   #4ecdc4;
 }
 
+body {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh; 
+    font-family: 'Montserrat', sans-serif;
+}
+.login-button{
+    background-color: var(--accent);
+    color: var(--text-primary);
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-size: 15px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+.login-button:hover{
+    background-color: var(--accent-hover);
+    
+}
+.register-button{
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+    padding: 8px 20px;
+    margin-left: 10px;
+    border-radius: 50px;
+    font-size: 15px;
+    text-decoration: none;
+    cursor: pointer;
+    border: solid var(--accent);
+    border-width: 1px;
+    transition: all 0.3s ease-in-out;
+}
+.register-button:hover{
+    background-color: var(--accent);
+    color: var(--text-primary);
+}
+.navbar-nav .nav-link{
+    font-weight: 500;
+    font-size: 1.1rem;
+    position: relative;
+    padding: 5px 10px;
+    transition: all 0.3s ease-in-out;
+    color: var(--text-primary);
+}
+.nav-link::after{
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--accent);
+    transition: all 0.3s ease-in-out;
+}
+.nav-link:hover::after, .nav-link.active::after{
+    width: 100%;
+}
+
+nav{
+    background-color: var(--bg-surface);
+    --bs-nav-link-color: var(--text-primary);
+    --bs-nav-link-hover-color: var(--accent); 
+    --bs-navbar-active-color: var(--text-primary);
+}
+
+.bg-surface {
+    background-color: var(--bg-surface) !important;
+}
+
+.text-accent {
+    color: var(--accent) !important;
+
+}
+
+.bg-accent {
+    background-color: var(--accent) !important;
+}
+
+.border-accent {
+    border-color: var(--accent) !important;
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
 *, *::before, *::after { 
   box-sizing: border-box; 
 }
@@ -127,9 +117,8 @@ nav{
 /* KOMPONEN DASHBOARD */
 
 .navbar-brand {
-  font-family: Montserrat-bold; 
   font-size: 30px; 
-  color: #F8FAFC;
+  color: var(--text-primary);
 }
 .brand-icon {
   width: 28px; height: 28px;
@@ -272,7 +261,10 @@ nav{
   color: var(--text-primary) !important; fill: var(--text-primary) !important;
   background: var(--bg-card-hover) !important;
 }
-.flatpickr-prev-month svg, .flatpickr-next-month svg { width: 14px; height: 14px; }
+.flatpickr-prev-month svg, .flatpickr-next-month svg { 
+  width: 14px; 
+  height: 14px; 
+}
 
 .flatpickr-innerContainer,
 .flatpickr-rContainer,
@@ -331,9 +323,12 @@ nav{
 }
 .flatpickr-day.has-task { position: relative; }
 .flatpickr-day.has-task::after {
-  content: ''; position: absolute; bottom: 4px; left: 50%;
+  content: ''; position: absolute; 
+  bottom: 4px; 
+  left: 50%;
   transform: translateX(-50%);
-  width: 4px; height: 4px;
+  width: 4px; 
+  height: 4px;
   background: var(--accent); 
   border-radius: 50%;
 }
@@ -426,7 +421,6 @@ nav{
   background: var(--accent); 
   border-color: var(--accent); 
 }
-.custom-checkbox.checked::after { content: '✓'; font-size: 10px; color: #fff; font-weight: 700; }
 
 .task-item-text { font-size: 0.875rem; color: var(--text-primary); }
 
@@ -439,13 +433,19 @@ nav{
 .tag-opsional { background: rgba(245,166,35,.15);  color: var(--tag-opsional); }
 .tag-tambahan { background: rgba(78,205,196,.15);  color: var(--tag-tambahan); }
 
-.btn-delete {
-  background: none; border: none;
-  color: var(--text-muted); cursor: pointer;
-  padding: 4px; border-radius: 6px; font-size: 0.875rem;
-  display: flex; align-items: center;
+.btn-edit, .btn-delete {
+  background: none; 
+  border: none;
+  color: var(--text-muted); 
+  cursor: pointer;
+  padding: 4px; 
+  border-radius: 6px; 
+  font-size: 0.8rem;
+  display: flex; 
+  align-items: center;
   transition: all 0.3s ease-in-out; 
 }
+.btn-edit:hover { color: var( --tag-opsional); background: rgba(139,92,246,.1); }
 .btn-delete:hover { color: var(--danger); background: rgba(224,92,106,.1); }
 
 .task-empty {

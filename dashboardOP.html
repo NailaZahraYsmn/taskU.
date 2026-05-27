@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List Dashboard </title>
+  
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  
+</head>
+<body>
+  
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10 col-xl-9">
+        
+        <div class="card main-card bg-surface text-white p-4 p-md-5">
+          <div class="row g-5">
+            
+            <div class="col-md-5 border-end border-secondary-subtle pe-md-4">
+              <h5 class="fw-bold mb-4 text-accent">Schedule</h5>
+              <div id="calendar-inline"></div>
+            </div>
+
+            <div class="col-md-7 ps-md-4">
+              
+              <div id="selected-date-title" class="text-uppercase text-secondary fw-bold mb-1" style="font-size: 0.8rem; letter-spacing: 1px;">
+                -
+              </div>
+              <h3 class="fw-bold mb-4">Task List</h3>
+
+              <form id="todo-form" class="mb-4">
+                <div class="input-group">
+                  <input type="text" id="todo-input" class="form-control form-dark py-2 px-3 rounded-start-5" placeholder="Tambah tugas baru..." required>
+                  <select id="todo-tag" class="form-select form-dark" style="max-width: 110px;">
+                    <option value="B2B">PENTING</option>
+                    <option value="UXED">OPSIONAL</option>
+                    <option value="UI Design">TAMBAHAN</option>
+                  </select>
+                  <button class="btn btn-accent rounded-end-5 px-4" type="submit">
+                    <i class="bi bi-plus-lg"></i>
+                  </button>
+                </div>
+              </form>
+
+              <div id="todo-list" class="d-flex flex-column gap-3">
+                </div>
+
+            </div>
+
+          </div>
+        </div>
+        </div>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+  <script>
+    // Inisialisasi LocalStorage
+    let todos = JSON.parse(localStorage.getItem('todos_db')) || [];
+    let activeDate = "";
+
+    const todoForm = document.getElementById('todo-form');
+    const todoInput = document.getElementById('todo-input');
+    const todoTag = document.getElementById('todo-tag');
+    const todoListContainer = document.getElementById('todo-list');
+    const dateTitle = document.getElementById('selected-date-title');
+
+    // Konfigurasi Kalender Flatpickr
+    const fp = flatpickr("#calendar-inline", {
+      inline: true,
+      defaultDate: "today",
+      dateFormat: "Y-m-d",
+      onChange: function(selectedDates, dateStr) {
+        activeDate = dateStr;
+        updateUI();
+      },
+      onReady: function(selectedDates, dateStr) {
+        activeDate = dateStr;
+        updateUI();
+      }
+    });
+
+    // Fungsi Render Tampilan
+    function updateUI() {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      const formattedDate = new Date(activeDate).toLocaleDateString('id-ID', options);
+      dateTitle.innerText = formattedDate;
+
+      const filteredTodos = todos.filter(todo => todo.date === activeDate);
+      todoListContainer.innerHTML = "";
+
+      if(filteredTodos.length === 0) {
+        todoListContainer.innerHTML = `
+          <div class="text-center py-5 text-secondary border border-secondary border-dashed rounded-4">
+            <i class="bi bi-clipboard-x fs-2 d-block mb-2 text-accent"></i>
+            Tidak ada tugas untuk tanggal ini.
+          </div>`;
+        return;
+      }
+
+      filteredTodos.forEach(todo => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = `todo-item p-3 d-flex align-items-center justify-content-between ${todo.completed ? 'todo-completed' : ''}`;
+        
+        // Penentuan CSS Class Badge Custom
+        let badgeClass = "bg-tag-ui";
+        if(todo.tag === "B2B") badgeClass = "bg-tag-b2b";
+        if(todo.tag === "UXED") badgeClass = "bg-tag-uxed";
+
+        itemDiv.innerHTML = `
+          <div class="d-flex align-items-center gap-3">
+            <div class="form-check fs-5 m-0 p-0 d-flex align-items-center">
+              <input class="form-check-input m-0 cursor-pointer" type="checkbox" ${todo.completed ? 'checked' : ''} onchange="toggleTask(${todo.id})">
+            </div>
+            <div>
+              <span class="badge badge-custom ${badgeClass} mb-1">${todo.tag}</span>
+              <div class="todo-text fw-semibold text-white-50">${todo.text}</div>
+            </div>
+          </div>
+          <button class="btn btn-sm text-danger border-0 p-1" onclick="deleteTask(${todo.id})">
+            <i class="bi bi-trash3 fs-5"></i>
+          </button>
+        `;
+        todoListContainer.appendChild(itemDiv);
+      });
+    }
+
+    // Tambah Tugas
+    todoForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const newTodo = {
+        id: Date.now(),
+        text: todoInput.value,
+        tag: todoTag.value,
+        date: activeDate,
+        completed: false
+      };
+      todos.push(newTodo);
+      saveToStorage();
+      todoInput.value = "";
+      updateUI();
+    });
+
+    // Toggle Status Selesai
+    function toggleTask(id) {
+      todos = todos.map(todo => {
+        if(todo.id === id) return { ...todo, completed: !todo.completed };
+        return todo;
+      });
+      saveToStorage();
+      updateUI();
+    }
+
+    // Hapus Tugas
+    function deleteTask(id) {
+      if(confirm("Hapus tugas ini?")) {
+        todos = todos.filter(todo => todo.id !== id);
+        saveToStorage();
+        updateUI();
+      }
+    }
+
+    function saveToStorage() {
+      localStorage.setItem('todos_db', JSON.stringify(todos));
+    }
+</script>
+</body>
+</html>
