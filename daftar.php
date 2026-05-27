@@ -11,7 +11,7 @@
 
 </head>  
 <body>
-        <?php
+    <?php
         if(isset($_POST['submit'])){
             include "koneksi.php"; 
 
@@ -20,12 +20,23 @@
             $password = $_POST['password'];
             $confirm_password = $_POST['confirm_password']; 
             
+            $query_check_email = mysqli_query($koneksi, "SELECT * FROM user WHERE email='$email'");
+            $query_check_username = mysqli_query($koneksi, "SELECT * FROM user WHERE username='$username'");
 
             // Logika Pengecekan: Apakah kedua password cocok?
             if ($password != $confirm_password) {
                 echo "<script>alert('Daftar Gagal: Password dan Konfirmasi Password tidak cocok!');
-                    window.history.back();</script>";
-            } else {
+                window.history.back();</script>";
+            }
+            elseif (mysqli_num_rows($query_check_email) > 0) {
+                echo "<script>alert('Daftar Gagal: Email sudah terdaftar!');
+                window.history.back();</script>";
+            }
+            elseif (mysqli_num_rows($query_check_username) > 0) {
+                echo "<script>alert('Daftar Gagal: Username sudah terdaftar!');
+                window.history.back();</script>";
+            }
+            else {
                 // Jika cocok, lakukan enkripsi md5 dan query INSERT
                 $password_md5 = md5($password);
                 
