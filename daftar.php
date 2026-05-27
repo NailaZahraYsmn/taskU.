@@ -11,6 +11,35 @@
 
 </head>  
 <body>
+        <?php
+        if(isset($_POST['username'])){
+            include "koneksi.php"; 
+
+            $email = $_POST['email'];
+            $username = $_POST['username'];
+            $password = $_POST['password'];
+            $confirm_password = $_POST['confirm_password']; 
+            
+
+            // Logika Pengecekan: Apakah kedua password cocok?
+            if ($password !== $confirm_password) {
+                echo "<script>alert('Daftar Gagal: Password dan Konfirmasi Password tidak cocok!');
+                    window.history.back();</script>";
+            } else {
+                // Jika cocok, lakukan enkripsi md5 dan query INSERT
+                $password_md5 = md5($password);
+                
+                $query = mysqli_query($koneksi, "INSERT INTO user VALUES (null,'$username', '$password_md5', '$email')");
+                if ($query){
+                    echo "<script>alert('Daftar Berhasil: Silahkan login!');
+                        location.href='login.php';</script>";
+                } else {
+                    echo "<script>alert('Daftar Gagal: Pastikan data benar!');
+                        location.href='daftar.php';</script>";    
+                }    
+            }
+        }
+    ?>
     <!-- container form -->
     <div class="global-container d-flex justify-content-center align-items-center min-vh-100">
         <div class="card register-form card p-4 p-md-5 shadow-sm-3 rounded-4 border-0 card animate__animated animate__fadeInDown duration-1s" style="background-color: #F8FAFC;">
