@@ -47,7 +47,7 @@
                 <h3 class="card-title text-center mb-3">D A F T A R</h3>
             </div>
             <div class="card-text-center">
-                <form action="dashboard.html"method="POST">
+                <form action="login.html" method="POST">
                     <div class="mb-4">
                         <label for="InputEmail1" class="form-label fw-bold">Email address</label>
                         <input type="email" class="form-control" id="InputEmail1" aria-describedby="emailHelp" name="email" required>
@@ -69,7 +69,7 @@
                         <div id="confirmPasswordHelp" class="form-text">Please confirm your password.</div>
                     </div>
                     
-                     <button type="button" class="btn btn-center btn-lg w-100 mt-3 rounded-pill" style="background-color: #8B5CF6; color: white;">Save</button>
+                    <button type="submit" class="btn btn-center btn-lg w-100 mt-3 rounded-pill" style="background-color: #8B5CF6; color: white;">Save</button>
                 </form>
             </div>
         </div>
