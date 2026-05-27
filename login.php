@@ -1,3 +1,7 @@
+<?php
+session_start();
+include "koneksi.php";
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -11,7 +15,30 @@
 
 </head>  
 <body>
-    <!-- container form -->
+    <?php
+
+if (isset($_POST['email'])){
+    $email = $_POST['email'];
+    $password = md5($_POST['password']);
+
+  
+    $query = mysqli_query($koneksi, "SELECT * FROM user WHERE email='$email' AND password='$password'");
+    
+    if (mysqli_num_rows($query) > 0){
+        $data = mysqli_fetch_array($query);
+        
+       
+        $_SESSION['user_id'] = $data['id']; 
+        
+        echo "<script>alert('Login Berhasil: Selamat Datang " . $data['username'] . "');
+            location.href='dashboard.php';</script>";
+    } else {
+        echo "<script>alert('Login Gagal: Pastikan email dan password benar!');
+            location.href='login.php';</script>";    
+    }    
+}
+?>
+  
     <div class="global-container d-flex justify-content-center align-items-center min-vh-100">
         <div class="card login-form card p-4 p-md-5 shadow-sm-3 rounded-4 border-0 card animate__animated animate__fadeInDown duration-1s" style="background-color: #F8FAFC;">
             <div class="card-body">
@@ -27,7 +54,6 @@
                     <div class="mb-4">
                         <label for="Password1" class="form-label fw-bold">Password</label>
                         <input type="password" class="form-control" id="Password1"  aria-describedby="passwordHelp" name="password" required>
-                        <div id="passwordHelp" class="form-text"><a href="lupa.html">Forgot your password?</a></div>
                     </div>
                     
                      <button type="submit" class="btn btn-center btn-lg w-100 mt-3 rounded-pill" style="background-color: #8B5CF6; color: white;" >Login</button>
