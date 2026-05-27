@@ -12,7 +12,7 @@
 </head>  
 <body>
         <?php
-        if(isset($_POST['username'])){
+        if(isset($_POST['submit'])){
             include "koneksi.php"; 
 
             $email = $_POST['email'];
@@ -22,14 +22,14 @@
             
 
             // Logika Pengecekan: Apakah kedua password cocok?
-            if ($password !== $confirm_password) {
+            if ($password != $confirm_password) {
                 echo "<script>alert('Daftar Gagal: Password dan Konfirmasi Password tidak cocok!');
                     window.history.back();</script>";
             } else {
                 // Jika cocok, lakukan enkripsi md5 dan query INSERT
                 $password_md5 = md5($password);
                 
-                $query = mysqli_query($koneksi, "INSERT INTO user VALUES (null,'$username', '$password_md5', '$email')");
+                $query = mysqli_query($koneksi, "INSERT INTO user VALUES (null,'$email', '$username', '$password_md5')");
                 if ($query){
                     echo "<script>alert('Daftar Berhasil: Silahkan login!');
                         location.href='login.php';</script>";
@@ -47,7 +47,7 @@
                 <h3 class="card-title text-center mb-3">D A F T A R</h3>
             </div>
             <div class="card-text-center">
-                <form action="login.html" method="POST">
+                <form method="POST">
                     <div class="mb-4">
                         <label for="InputEmail1" class="form-label fw-bold">Email address</label>
                         <input type="email" class="form-control" id="InputEmail1" aria-describedby="emailHelp" name="email" required>
@@ -69,7 +69,7 @@
                         <div id="confirmPasswordHelp" class="form-text">Please confirm your password.</div>
                     </div>
                     
-                    <button type="submit" class="btn btn-center btn-lg w-100 mt-3 rounded-pill" style="background-color: #8B5CF6; color: white;">Save</button>
+                    <button type="submit" name="submit" class="btn btn-center btn-lg w-100 mt-3 rounded-pill" style="background-color: #8B5CF6; color: white;">Save</button>
                 </form>
             </div>
         </div>

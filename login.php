@@ -1,6 +1,6 @@
 <?php
-session_start();
 include "koneksi.php";
+session_start();
 ?>
 <!doctype html>
 <html lang="en">
@@ -17,7 +17,7 @@ include "koneksi.php";
 <body>
     <?php
 
-if (isset($_POST['email'])){
+if (isset($_POST['submit'])) {
     $email = $_POST['email'];
     $password = md5($_POST['password']);
 
@@ -26,10 +26,7 @@ if (isset($_POST['email'])){
     
     if (mysqli_num_rows($query) > 0){
         $data = mysqli_fetch_array($query);
-        
-       
-        $_SESSION['user_id'] = $data['id']; 
-        
+        $_SESSION['nama_user'] = $data['username'];
         echo "<script>alert('Login Berhasil: Selamat Datang " . $data['username'] . "');
             location.href='dashboard.php';</script>";
     } else {
@@ -45,7 +42,7 @@ if (isset($_POST['email'])){
                 <h3 class="card-title text-center mb-3">L O G I N</h3>
             </div>
             <div class="card-text-center">
-                <form action="dashboard.html" method="POST">
+                <form method="POST">
                     <div class="mb-4">
                         <label for="InputEmail1" class="form-label fw-bold">Email address</label>
                         <input type="email" class="form-control" id="InputEmail1" aria-describedby="emailHelp" name="email" required>
@@ -56,7 +53,7 @@ if (isset($_POST['email'])){
                         <input type="password" class="form-control" id="Password1"  aria-describedby="passwordHelp" name="password" required>
                     </div>
                     
-                     <button type="submit" class="btn btn-center btn-lg w-100 mt-3 rounded-pill" style="background-color: #8B5CF6; color: white;" >Login</button>
+                     <button type="submit" name="submit" class="btn btn-center btn-lg w-100 mt-3 rounded-pill" style="background-color: #8B5CF6; color: white;" >Login</button>
                 </form>
             </div>
         </div>
