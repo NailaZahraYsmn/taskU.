@@ -1,16 +1,28 @@
-// inisialisasi awal
-let todos = JSON.parse(localStorage.getItem('tasku_todos')) || [];
+// Inisialisasi awal variabel penampung tugas
+let todos = [];
 let editingTaskId = null; 
 
-//format tanggal YYYY-MM-DD
+// Format tanggal YYYY-MM-DD
 function formatDateKey(d = new Date()) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
-// tanggal aktif di kalender
+
+// Tanggal aktif di kalender
 let selectedDate = formatDateKey(); 
 
-function saveAll() { localStorage.setItem('tasku_todos', JSON.stringify(todos)); }
-// profile dropdown
+// AMBIL DATA DARI DATABASE (Ganti fungsi localStorage)
+async function fetchTodos() {
+  try {
+    const response = await fetch('api_tasks.php');
+    todos = await response.json();
+    refreshCalendar();
+    renderTaskPanel();
+  } catch (error) {
+    console.error('Gagal memuat data tugas:', error);
+  }
+}
+
+// Profile dropdown toggle
 document.getElementById('profileBtn').addEventListener('click', function(e) {
   document.getElementById('profileDropdown').classList.toggle('open');
 });
@@ -20,43 +32,51 @@ document.addEventListener('click', function(e) {
     document.getElementById('profileDropdown').classList.remove('open');
   }
 });
-// konfirm logout
+
+// Konfirmasi logout (Fungsi AJAX ke logout.php)
 function handleLogout() {
   if (confirm('Yakin ingin keluar?')) {
-    localStorage.removeItem('tasku_todos');
-    todos = [];
-    alert('Anda telah keluar. Sampai jumpa!');
-    location.href = 'login.html';
+    // Lakukan request ke logout.php untuk menghancurkan session di server
+    fetch('logout.php')
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          alert('Anda telah keluar. Sampai jumpa!');
+          // Arahkan ke index.php, bukan login.html atau dashboard
+          location.href = 'index.php'; 
+        } else {
+          alert('Gagal logout, terjadi kesalahan pada server.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan jaringan.');
+      });
   }
 }
-
-// flatpickr
-// ambil tugas 
+// Tandai tugas per hari di kalender
 function getTaskDates() { return new Set(todos.map(t => t.date)); }
 
-// tandai tugas per hari di kalender
 function markDaysWithTasks(dObj, dStr, fpInstance, dayElem) {
     if (getTaskDates().has(formatDateKey(dayElem.dateObj))) {
         dayElem.classList.add('has-task');
     }
 }
 
-// konfigurasi flatpickr
+// Konfigurasi flatpickr
 const fp = flatpickr("#main-calendar", {
   inline: true,
   defaultDate: "today",
   dateFormat: "Y-m-d",
   onDayCreate: markDaysWithTasks, 
-  onChange: 
-  function(selectedDates, dateStr) {
+  onChange: function(selectedDates, dateStr) {
     selectedDate = dateStr;
     resetFormMode(); 
     renderTaskPanel();
   },
-  onReady: 
-  function(selectedDates, dateStr) {
+  onReady: function(selectedDates, dateStr) {
     selectedDate = dateStr;
-    renderTaskPanel();
+    fetchTodos(); // Ambil data saat kalender siap
   }
 });
 
@@ -64,13 +84,22 @@ function refreshCalendar() {
   fp.set('onDayCreate', markDaysWithTasks);
   fp.redraw();
 }
-// format tanggal untuk tampilan
+
+// Format tanggal untuk tampilan teks panel
+// Format tanggal untuk tampilan teks panel kanan
 function formatDate(dateStr) {
+  // Ubah potongan string tanggal menjadi tipe data Number
   const [y, m, d] = dateStr.split('-').map(Number);
-  return new Date(y, m, d).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+  
+  // m - 1 digunakan untuk menyesuaikan indeks bulan JavaScript (0-11)
+  return new Date(y, m - 1, d).toLocaleDateString('id-ID', { 
+    day: 'numeric', 
+    month: 'long', 
+    year: 'numeric' 
+  });
 }
 
-// summary task panel
+// Render isi panel daftar tugas
 function renderTaskPanel() {
   document.getElementById('selected-date-label').textContent = formatDate(selectedDate);
   const container = document.getElementById('task-list-container');
@@ -101,7 +130,7 @@ function renderTaskPanel() {
     item.className = `task-item${todo.completed ? ' completed' : ''}`;
     item.innerHTML = `
       <div class="task-item-left">
-        <div class="custom-checkbox${todo.completed ? ' checked' : ''}" onclick="toggleTask(${todo.id})"></div>
+        <div class="custom-checkbox${todo.completed ? ' checked' : ''}" onclick="toggleTask(${todo.id}, ${todo.completed})"></div>
         <div>
           <span class="task-tag-badge ${tagClass}">${todo.tag}</span>
           <div class="task-item-text">${escapeHtml(todo.text)}</div>
@@ -121,29 +150,39 @@ function renderTaskPanel() {
   container.innerHTML = '';
   container.appendChild(group);
 }
-// filter input
+
 function escapeHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// CRUD
-document.getElementById('todo-form').addEventListener('submit', function(e) {
+// KONTROL PROSES TAMBAH & EDIT (POST KE DATABASE)
+document.getElementById('todo-form').addEventListener('submit', async function(e) {
   e.preventDefault();
   const text = document.getElementById('todo-input').value.trim();
   const tag  = document.getElementById('todo-tag').value;
   if (!text) return;
 
+  const bodyData = { text, tag, date: selectedDate };
   if (editingTaskId !== null) {
-    todos = todos.map(t => t.id === editingTaskId ? { ...t, text, tag } : t);
-    resetFormMode();
-  } else {
-    todos.push({ id: Date.now(), text, tag, date: selectedDate, completed: false });
+    bodyData.id = editingTaskId;
   }
 
-  saveAll();
-  document.getElementById('todo-input').value = '';
-  refreshCalendar();
-  renderTaskPanel();
+  try {
+    const response = await fetch('api_tasks.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(bodyData)
+    });
+    const result = await response.json();
+    
+    if(result.status === 'success') {
+      document.getElementById('todo-input').value = '';
+      resetFormMode();
+      fetchTodos(); // Refresh total data terbaru
+    }
+  } catch (error) {
+    console.error('Gagal menyimpan data:', error);
+  }
 });
 
 function editTask(id) {
@@ -168,18 +207,33 @@ function resetFormMode() {
   }
 }
 
-function toggleTask(id) {
-  todos = todos.map(t => t.id === id ? {...t, completed: !t.completed} : t);
-  saveAll();
-  renderTaskPanel();
+// TOGGLE CHECKBOX STATUS (PUT KE DATABASE)
+async function toggleTask(id, currentStatus) {
+  try {
+    await fetch('api_tasks.php', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: id, completed: !currentStatus })
+    });
+    fetchTodos();
+  } catch (error) {
+    console.error('Gagal memperbarui status:', error);
+  }
 }
 
-function deleteTask(id) {
+// HAPUS DATA (DELETE KE DATABASE)
+async function deleteTask(id) {
   if (confirm('Hapus tugas ini?')) {
     if (editingTaskId === id) resetFormMode(); 
-    todos = todos.filter(t => t.id !== id);
-    saveAll();
-    refreshCalendar();
-    renderTaskPanel();
+    try {
+      await fetch('api_tasks.php', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: id })
+      });
+      fetchTodos();
+    } catch (error) {
+      console.error('Gagal menghapus data:', error);
+    }
   }
 }
