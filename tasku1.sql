@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 27, 2026 at 03:40 AM
+-- Generation Time: May 28, 2026 at 03:59 PM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.30
 
@@ -32,15 +32,16 @@ CREATE TABLE `tasks` (
   `user_id` int NOT NULL,
   `task_text` varchar(255) NOT NULL,
   `task_option` varchar(50) NOT NULL,
-  `task_date` date NOT NULL
+  `task_date` date NOT NULL,
+  `completed` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `tasks`
 --
 
-INSERT INTO `tasks` (`id`, `user_id`, `task_text`, `task_option`, `task_date`) VALUES
-(1, 6, 'rapat', 'Kuliah', '2026-05-31');
+INSERT INTO `tasks` (`id`, `user_id`, `task_text`, `task_option`, `task_date`, `completed`) VALUES
+(2, 6, 'belanja', 'OPSIONAL', '2026-06-01', 0);
 
 -- --------------------------------------------------------
 
@@ -88,7 +89,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `tasks`
 --
 ALTER TABLE `tasks`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `user`
