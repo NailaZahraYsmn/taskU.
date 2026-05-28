@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['nama_user'])) {
+  echo "<script>alert('Akses Ditolak: Silahkan login terlebih dahulu!');
+  location.href='login.php';</script>";
+  exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -29,12 +37,12 @@
       <div class="position-relative ms-auto" id="profileWrapper">
         <button class="profile-btn" id="profileBtn">
           <div class="profile-avatar"><i class="bi bi-person"></i></div>
-          <span id="username-display">nama_pengguna</span>
+          <span id="username-display"><?= $_SESSION['nama_user'] ?></span>
           <i class="bi bi-chevron-down" style="font-size:.65rem;color:var(--text-muted);"></i>
         </button>
         <div class="profile-dropdown" id="profileDropdown" type="button" data-bs-toggle="dropdown">
           <div class="px-3 pb-2 pt-1" style="border-bottom:1px solid var(--border);margin-bottom:4px;">
-            <div style="font-size:.8rem;font-weight:600;" class="text-primary">nama_pengguna</div>
+            <div style="font-size:.8rem;font-weight:600;" class="text-primary"> <?= $_SESSION['nama_user'] ?> </div>
             <div style="font-size:.72rem;color:var(--text-muted);">Pengguna aktif</div>
           </div>
           <button class="dd-item danger" onclick="handleLogout()">
