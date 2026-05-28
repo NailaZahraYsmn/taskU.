@@ -22,11 +22,23 @@ document.addEventListener('click', function(e) {
 });
 // konfirm logout
 function handleLogout() {
-  if (confirm('Yakin ingin keluar?')) {
-    localStorage.removeItem('tasku_todos');
+  if (confirm("Yakin ingin keluar?")) {
+    localStorage.removeItem("tasku_todos");
     todos = [];
-    alert('Anda telah keluar. Sampai jumpa!');
-    location.href = 'login.html';
+    fetch("logout.php", {
+      method: "POST",
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === "success") {
+        alert("Anda berhasil keluar.");
+        window.location.href = "login.php";
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("Gagal memproses logout.");
+    });
   }
 }
 

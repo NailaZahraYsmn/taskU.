@@ -1,6 +1,6 @@
 <?php
-session_start();
 include "koneksi.php";
+session_start();
 ?>
 <!doctype html>
 <html lang="en">
@@ -12,12 +12,10 @@ include "koneksi.php";
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <title>login page</title>
-
 </head>  
 <body>
-    <?php
-
-if (isset($_POST['email'])){
+<?php
+if (isset($_POST['submit'])) {
     $email = $_POST['email'];
     $password = md5($_POST['password']);
 
@@ -26,26 +24,22 @@ if (isset($_POST['email'])){
     
     if (mysqli_num_rows($query) > 0){
         $data = mysqli_fetch_array($query);
-        
-       
-        $_SESSION['user_id'] = $data['id']; 
-        
+        $_SESSION['nama_user'] = $data['username'];
         echo "<script>alert('Login Berhasil: Selamat Datang " . $data['username'] . "');
-            location.href='dashboard.php';</script>";
+        location.href='dashboard.php';</script>";
     } else {
         echo "<script>alert('Login Gagal: Pastikan email dan password benar!');
-            location.href='login.php';</script>";    
+        location.href='login.php';</script>";    
     }    
 }
 ?>
-  
     <div class="global-container d-flex justify-content-center align-items-center min-vh-100">
         <div class="card login-form card p-4 p-md-5 shadow-sm-3 rounded-4 border-0 card animate__animated animate__fadeInDown duration-1s" style="background-color: #F8FAFC;">
             <div class="card-body">
                 <h3 class="card-title text-center mb-3">L O G I N</h3>
             </div>
             <div class="card-text-center">
-                <form action="dashboard.html" method="POST">
+                <form method="POST">
                     <div class="mb-4">
                         <label for="InputEmail1" class="form-label fw-bold">Email address</label>
                         <input type="email" class="form-control" id="InputEmail1" aria-describedby="emailHelp" name="email" required>
@@ -55,8 +49,8 @@ if (isset($_POST['email'])){
                         <label for="Password1" class="form-label fw-bold">Password</label>
                         <input type="password" class="form-control" id="Password1"  aria-describedby="passwordHelp" name="password" required>
                     </div>
-                    
-                     <button type="submit" class="btn btn-center btn-lg w-100 mt-3 rounded-pill" style="background-color: #8B5CF6; color: white;" >Login</button>
+                    <p class="text-decoration-none text-primary fw-bold">Belum punya akun? <a href="daftar.php" class="text-decoration-underline">Daftar</a></p>
+                    <button type="submit" name="submit" class="btn btn-center btn-lg w-100 mt-3 rounded-pill" style="background-color: #8B5CF6; color: white;" >Login</button>
                 </form>
             </div>
         </div>
