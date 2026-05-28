@@ -14,7 +14,7 @@
     
 </head>
 <body data-bs-spy="scroll" data-bs-target="#navbar" data-bs-offset="50">
-    <nav id="navbar" class="navbar navbar-dark navbar-expand-lg fixed-top p-3 border-bottom border-secondary rounded-3">
+    <nav id="navbar" class="navbar navbar-dark navbar-expand-lg fixed-top p-1 border-bottom border-secondary rounded-3">
         <div class="container-fluid px-4">
             <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16" style=" color: var(--accent);">
                 <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0"/>
@@ -45,7 +45,7 @@
 <!-- SECTION HOME -->
     <section id="index">
         <div class="container d-flex flex-column align-items-center justify-content-center text-center" style="height: 100vh;">
-            <h1 class="display-4 mb-4 mt-5">Kelola Tugas, Hidup Jadi Makin Simpel</h1>
+            <h1 class="display-5 mb-2 mt-5">Kelola Tugas, Hidup Jadi Makin Simpel</h1>
             <p class="lead mb-4">taskU. adalah solusi total buat manajemen tugasmu. Tetap teratur, makin produktif, dan capai semua goals-mu dengan mudah.</p>
 
             <a href="login.php" class="login-button h-10 w-20 d-inline-block"><b>Mulai Gratis</b></a>

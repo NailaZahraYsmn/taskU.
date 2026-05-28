@@ -35,23 +35,23 @@ document.addEventListener('click', function(e) {
 
 // Konfirmasi logout (Fungsi AJAX ke logout.php)
 function handleLogout() {
-  if (confirm('Yakin ingin keluar?')) {
-    // Lakukan request ke logout.php untuk menghancurkan session di server
-    fetch('logout.php')
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === 'success') {
-          alert('Anda telah keluar. Sampai jumpa!');
-          // Arahkan ke index.php, bukan login.html atau dashboard
-          location.href = 'index.php'; 
-        } else {
-          alert('Gagal logout, terjadi kesalahan pada server.');
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Terjadi kesalahan jaringan.');
-      });
+  if (confirm("Yakin ingin keluar?")) {
+    localStorage.removeItem("tasku_todos");
+    todos = [];
+    fetch("logout.php", {
+      method: "POST",
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === "success") {
+        alert("Anda berhasil keluar.");
+        window.location.href = "login.php";
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("Gagal memproses logout.");
+    });
   }
 }
 // Tandai tugas per hari di kalender
