@@ -11,6 +11,46 @@
 
 </head>  
 <body>
+    <?php
+        if(isset($_POST['submit'])){
+            include "koneksi.php"; 
+
+            $email = $_POST['email'];
+            $username = $_POST['username'];
+            $password = $_POST['password'];
+            $confirm_password = $_POST['confirm_password']; 
+            
+            $query_check_email = mysqli_query($koneksi, "SELECT * FROM user WHERE email='$email'");
+            $query_check_username = mysqli_query($koneksi, "SELECT * FROM user WHERE username='$username'");
+
+            // Logika Pengecekan: Apakah kedua password cocok?
+            if ($password != $confirm_password) {
+                echo "<script>alert('Daftar Gagal: Password dan Konfirmasi Password tidak cocok!');
+                window.history.back();</script>";
+            }
+            elseif (mysqli_num_rows($query_check_email) > 0) {
+                echo "<script>alert('Daftar Gagal: Email sudah terdaftar!');
+                window.history.back();</script>";
+            }
+            elseif (mysqli_num_rows($query_check_username) > 0) {
+                echo "<script>alert('Daftar Gagal: Username sudah terdaftar!');
+                window.history.back();</script>";
+            }
+            else {
+                // Jika cocok, lakukan enkripsi md5 dan query INSERT
+                $password_md5 = md5($password);
+                
+                $query = mysqli_query($koneksi, "INSERT INTO user VALUES (null,'$email', '$username', '$password_md5')");
+                if ($query){
+                    echo "<script>alert('Daftar Berhasil: Silahkan login!');
+                        location.href='login.php';</script>";
+                } else {
+                    echo "<script>alert('Daftar Gagal: Pastikan data benar!');
+                        location.href='daftar.php';</script>";    
+                }    
+            }
+        }
+    ?>
     <!-- container form -->
     <div class="global-container d-flex justify-content-center align-items-center min-vh-100">
         <div class="card register-form card p-4 p-md-5 shadow-sm-3 rounded-4 border-0 card animate__animated animate__fadeInDown duration-1s" style="background-color: #F8FAFC;">
@@ -18,7 +58,7 @@
                 <h3 class="card-title text-center mb-3">D A F T A R</h3>
             </div>
             <div class="card-text-center">
-                <form action="dashboard.html"method="POST">
+                <form method="POST">
                     <div class="mb-4">
                         <label for="InputEmail1" class="form-label fw-bold">Email address</label>
                         <input type="email" class="form-control" id="InputEmail1" aria-describedby="emailHelp" name="email" required>
@@ -40,7 +80,7 @@
                         <div id="confirmPasswordHelp" class="form-text">Please confirm your password.</div>
                     </div>
                     
-                     <button type="button" class="btn btn-center btn-lg w-100 mt-3 rounded-pill" style="background-color: #8B5CF6; color: white;">Save</button>
+                    <button type="submit" name="submit" class="btn btn-center btn-lg w-100 mt-3 rounded-pill" style="background-color: #8B5CF6; color: white;">Save</button>
                 </form>
             </div>
         </div>
