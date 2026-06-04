@@ -12,7 +12,19 @@ if (!isset($_SESSION['nama_user'])) {
 // Ambil user_id berdasarkan username yang ada di session
 $username = $_SESSION['nama_user'];
 $user_query = mysqli_query($koneksi, "SELECT id FROM user WHERE username='$username'");
+
+if (!$user_query) {
+    echo json_encode(["status" => "error", "message" => "Query error: " . mysqli_error($koneksi)]);
+    exit;
+}
+
 $user_data = mysqli_fetch_assoc($user_query);
+
+if (!$user_data) {
+    echo json_encode(["status" => "error", "message" => "User not found"]);
+    exit;
+}
+
 $user_id = $user_data['id'];
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -21,6 +33,12 @@ switch ($method) {
     case 'GET':
         // Mengambil semua data tugas milik user aktif
         $query = mysqli_query($koneksi, "SELECT id, task_text AS text, task_option AS tag, task_date AS date, completed FROM tasks WHERE user_id = $user_id");
+        
+        if (!$query) {
+            echo json_encode(["status" => "error", "message" => "Query error: " . mysqli_error($koneksi)]);
+            exit;
+        }
+        
         $tasks = [];
         while ($row = mysqli_fetch_assoc($query)) {
             $row['id'] = (int)$row['id'];
@@ -33,6 +51,11 @@ switch ($method) {
     case 'POST':
         // Menambah atau memperbarui tugas
         $input = json_decode(file_get_contents('php://input'), true);
+        
+        if (!$input || !isset($input['text']) || !isset($input['tag']) || !isset($input['date'])) {
+            echo json_encode(["status" => "error", "message" => "Invalid input data"]);
+            exit;
+        }
         
         $text = mysqli_real_escape_string($koneksi, $input['text']);
         $tag = mysqli_real_escape_string($koneksi, $input['tag']);
@@ -57,6 +80,12 @@ switch ($method) {
     case 'PUT':
         // Mengubah status completed (toggle)
         $input = json_decode(file_get_contents('php://input'), true);
+        
+        if (!$input || !isset($input['id']) || !isset($input['completed'])) {
+            echo json_encode(["status" => "error", "message" => "Invalid input data"]);
+            exit;
+        }
+        
         $id = (int)$input['id'];
         $completed = $input['completed'] ? 1 : 0;
 
@@ -64,20 +93,26 @@ switch ($method) {
         if ($query) {
             echo json_encode(["status" => "success"]);
         } else {
-            echo json_encode(["status" => "error"]);
+            echo json_encode(["status" => "error", "message" => mysqli_error($koneksi)]);
         }
         break;
 
     case 'DELETE':
         // Menghapus data tugas
         $input = json_decode(file_get_contents('php://input'), true);
+        
+        if (!$input || !isset($input['id'])) {
+            echo json_encode(["status" => "error", "message" => "Invalid input data"]);
+            exit;
+        }
+        
         $id = (int)$input['id'];
 
         $query = mysqli_query($koneksi, "DELETE FROM tasks WHERE id=$id AND user_id=$user_id");
         if ($query) {
             echo json_encode(["status" => "success"]);
         } else {
-            echo json_encode(["status" => "error"]);
+            echo json_encode(["status" => "error", "message" => mysqli_error($koneksi)]);
         }
         break;
 }
