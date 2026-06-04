@@ -36,6 +36,14 @@
                 echo "<script>alert('Daftar Gagal: Username sudah terdaftar!');
                 window.history.back();</script>";
             }
+            elseif (strlen($password) < 8 || strlen($password) > 20) {
+                echo "<script>alert('Daftar Gagal: Password harus memiliki panjang 8-20 karakter!');
+                window.history.back();</script>";
+            }
+            elseif (strlen($username) < 3 || strlen($username) > 15) {
+                echo "<script>alert('Daftar Gagal: Username harus memiliki panjang 3-15 karakter!');
+                window.history.back();</script>";
+            }
             else {
                 // Jika cocok, lakukan enkripsi md5 dan query INSERT
                 $password_md5 = md5($password);
