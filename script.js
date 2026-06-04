@@ -1,56 +1,68 @@
-// inisialisasi awal
-let todos = JSON.parse(localStorage.getItem('tasku_todos')) || [];
-let editingTaskId = null; 
+// Inisialisasi awal (kosong, data diambil dari database)
+let todos = [];
+let editingTaskId = null;
 
-//format tanggal YYYY-MM-DD
+// format tanggal YYYY-MM-DD
 function formatDateKey(d = new Date()) {
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 // tanggal aktif di kalender
-let selectedDate = formatDateKey(); 
+let selectedDate = formatDateKey();
 
-function saveAll() { localStorage.setItem('tasku_todos', JSON.stringify(todos)); }
+// AMBIL DATA DARI DATABASE (READ)
+function loadTodos() {
+  fetch("tugas_aksi.php?action=list")
+    .then((response) => response.json())
+    .then((data) => {
+      todos = data;
+      refreshCalendar();
+      renderTaskPanel();
+    })
+    .catch((error) => console.error("Error load data:", error));
+}
+
 // profile dropdown
-document.getElementById('profileBtn').addEventListener('click', function(e) {
-  document.getElementById('profileDropdown').classList.toggle('open');
+document.getElementById("profileBtn").addEventListener("click", function (e) {
+  document.getElementById("profileDropdown").classList.toggle("open");
 });
 
-document.addEventListener('click', function(e) {
-  if (!document.getElementById('profileWrapper').contains(e.target)) {
-    document.getElementById('profileDropdown').classList.remove('open');
+document.addEventListener("click", function (e) {
+  if (!document.getElementById("profileWrapper").contains(e.target)) {
+    document.getElementById("profileDropdown").classList.remove("open");
   }
 });
-// konfirm logout
+
+// konfirm logout (Hapus pembersihan localStorage karena data sudah aman di DB)
 function handleLogout() {
   if (confirm("Yakin ingin keluar?")) {
-    localStorage.removeItem("tasku_todos");
     todos = [];
     fetch("logout.php", {
       method: "POST",
     })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.status === "success") {
-        alert("Anda berhasil keluar.");
-        window.location.href = "login.php";
-      }
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      alert("Gagal memproses logout.");
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === "success") {
+          alert("Anda berhasil keluar.");
+          window.location.href = "login.php";
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("Gagal memproses logout.");
+      });
   }
 }
 
 // flatpickr
-// ambil tugas 
-function getTaskDates() { return new Set(todos.map(t => t.date)); }
+function getTaskDates() {
+  return new Set(todos.map((t) => t.date));
+}
 
 // tandai tugas per hari di kalender
 function markDaysWithTasks(dObj, dStr, fpInstance, dayElem) {
-    if (getTaskDates().has(formatDateKey(dayElem.dateObj))) {
-        dayElem.classList.add('has-task');
-    }
+  if (getTaskDates().has(formatDateKey(dayElem.dateObj))) {
+    dayElem.classList.add("has-task");
+  }
 }
 
 // konfigurasi flatpickr
@@ -58,35 +70,39 @@ const fp = flatpickr("#main-calendar", {
   inline: true,
   defaultDate: "today",
   dateFormat: "Y-m-d",
-  onDayCreate: markDaysWithTasks, 
-  onChange: 
-  function(selectedDates, dateStr) {
+  onDayCreate: markDaysWithTasks,
+  onChange: function (selectedDates, dateStr) {
     selectedDate = dateStr;
-    resetFormMode(); 
+    resetFormMode();
     renderTaskPanel();
   },
-  onReady: 
-  function(selectedDates, dateStr) {
+  onReady: function (selectedDates, dateStr) {
     selectedDate = dateStr;
-    renderTaskPanel();
-  }
+    loadTodos(); // Panggil data dari database saat kalender siap
+  },
 });
 
 function refreshCalendar() {
-  fp.set('onDayCreate', markDaysWithTasks);
+  fp.set("onDayCreate", markDaysWithTasks);
   fp.redraw();
 }
+
 // format tanggal untuk tampilan
 function formatDate(dateStr) {
-  const [y, m, d] = dateStr.split('-').map(Number);
-  return new Date(y, m, d).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, m, d).toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 }
 
 // summary task panel
 function renderTaskPanel() {
-  document.getElementById('selected-date-label').textContent = formatDate(selectedDate);
-  const container = document.getElementById('task-list-container');
-  const filtered  = todos.filter(t => t.date === selectedDate);
+  document.getElementById("selected-date-label").textContent =
+    formatDate(selectedDate);
+  const container = document.getElementById("task-list-container");
+  const filtered = todos.filter((t) => t.date === selectedDate);
 
   if (!filtered.length) {
     container.innerHTML = `
@@ -97,23 +113,28 @@ function renderTaskPanel() {
     return;
   }
 
-  const group = document.createElement('div');
-  group.className = 'task-group';
+  const group = document.createElement("div");
+  group.className = "task-group";
 
-  const hdr = document.createElement('div');
-  hdr.className = 'task-group-header';
+  const hdr = document.createElement("div");
+  hdr.className = "task-group-header";
   hdr.innerHTML = `
     <span>${formatDate(selectedDate)}</span>
     <span style="color:var(--text-muted);font-size:.7rem;">${filtered.length} tugas</span>`;
   group.appendChild(hdr);
 
-  filtered.forEach(todo => {
-    const tagClass = { PENTING:'tag-penting', OPSIONAL:'tag-opsional', TAMBAHAN:'tag-tambahan' }[todo.tag] || 'tag-tambahan';
-    const item = document.createElement('div');
-    item.className = `task-item${todo.completed ? ' completed' : ''}`;
+  filtered.forEach((todo) => {
+    const tagClass =
+      {
+        PENTING: "tag-penting",
+        OPSIONAL: "tag-opsional",
+        TAMBAHAN: "tag-tambahan",
+      }[todo.tag] || "tag-tambahan";
+    const item = document.createElement("div");
+    item.className = `task-item${todo.completed ? " completed" : ""}`;
     item.innerHTML = `
       <div class="task-item-left">
-        <div class="custom-checkbox${todo.completed ? ' checked' : ''}" onclick="toggleTask(${todo.id})"></div>
+        <div class="custom-checkbox${todo.completed ? " checked" : ""}" onclick="toggleTask(${todo.id}, ${todo.completed})"></div>
         <div>
           <span class="task-tag-badge ${tagClass}">${todo.tag}</span>
           <div class="task-item-text">${escapeHtml(todo.text)}</div>
@@ -130,68 +151,96 @@ function renderTaskPanel() {
     group.appendChild(item);
   });
 
-  container.innerHTML = '';
+  container.innerHTML = "";
   container.appendChild(group);
 }
+
 // filter input
 function escapeHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-// CRUD
-document.getElementById('todo-form').addEventListener('submit', function(e) {
+// PROSES SIMPAN / EDIT KE DATABASE (CREATE / UPDATE)
+document.getElementById("todo-form").addEventListener("submit", function (e) {
   e.preventDefault();
-  const text = document.getElementById('todo-input').value.trim();
-  const tag  = document.getElementById('todo-tag').value;
+  const text = document.getElementById("todo-input").value.trim();
+  const tag = document.getElementById("todo-tag").value;
   if (!text) return;
 
+  const payload = { text, tag, date: selectedDate };
   if (editingTaskId !== null) {
-    todos = todos.map(t => t.id === editingTaskId ? { ...t, text, tag } : t);
-    resetFormMode();
-  } else {
-    todos.push({ id: Date.now(), text, tag, date: selectedDate, completed: false });
+    payload.id = editingTaskId;
   }
 
-  saveAll();
-  document.getElementById('todo-input').value = '';
-  refreshCalendar();
-  renderTaskPanel();
+  fetch("tugas_aksi.php?action=save", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.status === "success") {
+        document.getElementById("todo-input").value = "";
+        resetFormMode();
+        loadTodos(); // Muat ulang data terbaru dari database
+      } else {
+        alert("Gagal menyimpan tugas!");
+      }
+    });
 });
 
 function editTask(id) {
-  const taskToEdit = todos.find(t => t.id === id);
+  const taskToEdit = todos.find((t) => t.id == id);
   if (!taskToEdit) return;
 
-  document.getElementById('todo-input').value = taskToEdit.text;
-  document.getElementById('todo-tag').value = taskToEdit.tag;
+  document.getElementById("todo-input").value = taskToEdit.text;
+  document.getElementById("todo-tag").value = taskToEdit.tag;
   editingTaskId = id;
 
-  const submitBtn = document.querySelector('.btn-add'); 
-  submitBtn.textContent = 'Edit';
-  submitBtn.style.backgroundColor = 'var(--tag-opsional)'; 
+  const submitBtn = document.querySelector(".btn-add");
+  submitBtn.textContent = "Edit";
+  submitBtn.style.backgroundColor = "var(--tag-opsional)";
 }
 
 function resetFormMode() {
   editingTaskId = null;
-  const submitBtn = document.querySelector('.btn-add'); 
+  const submitBtn = document.querySelector(".btn-add");
   if (submitBtn) {
-    submitBtn.textContent = 'Add';
-    submitBtn.style.backgroundColor = 'var(--accent)';
+    submitBtn.textContent = "Add";
+    submitBtn.style.backgroundColor = "var(--accent)";
   }
 }
 
-function toggleTask(id) {
-  todos = todos.map(t => t.id === id ? {...t, completed: !t.completed} : t);
-  saveAll();
-  renderTaskPanel();
+// TOGGLE PROSES CHECKLIST (UPDATE STATUS KE DATABASE)
+function toggleTask(id, currentStatus) {
+  fetch("tugas_aksi.php?action=toggle", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id: id, completed: !currentStatus }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.status === "success") {
+        loadTodos();
+      }
+    });
 }
 
+// HAPUS DATA DARI DATABASE (DELETE)
 function deleteTask(id) {
-  if (confirm('Hapus tugas ini?')) {
-    if (editingTaskId === id) resetFormMode(); 
-    todos = todos.filter(t => t.id !== id);
-    saveAll();
-    refreshCalendar();
-    renderTaskPanel();
+  if (confirm("Hapus tugas ini?")) {
+    if (editingTaskId === id) resetFormMode();
+
+    fetch("tugas_aksi.php?action=delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: id }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
+          loadTodos();
+        }
+      });
   }
 }
