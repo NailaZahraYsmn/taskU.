@@ -116,6 +116,26 @@ nav{
 
 /* KOMPONEN DASHBOARD */
 
+body.light-mode {
+  --bg-base:        #F8FAFC;
+  --bg-surface:     #FFFFFF;
+  --bg-card:        #FFFFFF;
+  --bg-card-hover:  #F1F5F9;
+  --bg-input:       #F8FAFC;
+  --text-primary:   #0F172A;
+  --text-secondary: #475569;
+  --text-muted:     #94A3B8;
+  --border:         rgba(0, 0, 0, 0.1);
+}
+body.light-mode .flatpickr-day {
+  color: var(--text-primary) !important;
+}
+body.light-mode .flatpickr-current-month,
+body.light-mode .flatpickr-monthDropdown-months,
+body.light-mode .flatpickr-current-month .numInputWrapper input {
+  color: var(--text-primary) !important;
+}
+
 .navbar-brand {
   font-size: 30px; 
   color: var(--text-primary);
