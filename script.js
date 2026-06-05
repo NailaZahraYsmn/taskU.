@@ -1,35 +1,27 @@
-// Inisialisasi awal variabel penampung tugas
+// Inisialisasi awal (kosong, data diambil dari database)
 let todos = [];
 let editingTaskId = null;
 
-// Format tanggal YYYY-MM-DD
+// format tanggal YYYY-MM-DD
 function formatDateKey(d = new Date()) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
-
-// Tanggal aktif di kalender
+// tanggal aktif di kalender
 let selectedDate = formatDateKey();
 
-// AMBIL DATA DARI DATABASE (Ganti fungsi localStorage)
-async function fetchTodos() {
-  try {
-    const response = await fetch("api_tasks.php");
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const contentType = response.headers.get("content-type");
-    if (!contentType || !contentType.includes("application/json")) {
-      throw new Error("Response is not valid JSON");
-    }
-    todos = await response.json();
-    refreshCalendar();
-    renderTaskPanel();
-  } catch (error) {
-    console.error("Gagal memuat data tugas:", error);
-  }
+// AMBIL DATA DARI DATABASE (READ)
+function loadTodos() {
+  fetch("api_tasks.php?action=list")
+    .then((response) => response.json())
+    .then((data) => {
+      todos = data;
+      refreshCalendar();
+      renderTaskPanel();
+    })
+    .catch((error) => console.error("Error load data:", error));
 }
 
-// Profile dropdown toggle
+// profile dropdown
 document.getElementById("profileBtn").addEventListener("click", function (e) {
   document.getElementById("profileDropdown").classList.toggle("open");
 });
@@ -40,10 +32,9 @@ document.addEventListener("click", function (e) {
   }
 });
 
-// Konfirmasi logout (Fungsi AJAX ke logout.php)
+// konfirm logout (Hapus pembersihan localStorage karena data sudah aman di DB)
 function handleLogout() {
   if (confirm("Yakin ingin keluar?")) {
-    localStorage.removeItem("tasku_todos");
     todos = [];
     fetch("logout.php", {
       method: "POST",
@@ -61,18 +52,20 @@ function handleLogout() {
       });
   }
 }
-// Tandai tugas per hari di kalender
+
+// flatpickr
 function getTaskDates() {
   return new Set(todos.map((t) => t.date));
 }
 
+// tandai tugas per hari di kalender
 function markDaysWithTasks(dObj, dStr, fpInstance, dayElem) {
   if (getTaskDates().has(formatDateKey(dayElem.dateObj))) {
     dayElem.classList.add("has-task");
   }
 }
 
-// Konfigurasi flatpickr
+// konfigurasi flatpickr
 const fp = flatpickr("#main-calendar", {
   inline: true,
   defaultDate: "today",
@@ -85,7 +78,7 @@ const fp = flatpickr("#main-calendar", {
   },
   onReady: function (selectedDates, dateStr) {
     selectedDate = dateStr;
-    fetchTodos(); // Ambil data saat kalender siap
+    loadTodos(); // Panggil data dari database saat kalender siap
   },
 });
 
@@ -94,21 +87,17 @@ function refreshCalendar() {
   fp.redraw();
 }
 
-// Format tanggal untuk tampilan teks panel
-// Format tanggal untuk tampilan teks panel kanan
+// format tanggal untuk tampilan
 function formatDate(dateStr) {
-  // Ubah potongan string tanggal menjadi tipe data Number
   const [y, m, d] = dateStr.split("-").map(Number);
-
-  // m - 1 digunakan untuk menyesuaikan indeks bulan JavaScript (0-11)
-  return new Date(y, m - 1, d).toLocaleDateString("id-ID", {
+  return new Date(y, m, d).toLocaleDateString("id-ID", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
 }
 
-// Render isi panel daftar tugas
+// summary task panel
 function renderTaskPanel() {
   document.getElementById("selected-date-label").textContent =
     formatDate(selectedDate);
@@ -166,58 +155,42 @@ function renderTaskPanel() {
   container.appendChild(group);
 }
 
+// filter input
 function escapeHtml(s) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-// KONTROL PROSES TAMBAH & EDIT (POST KE DATABASE)
-document
-  .getElementById("todo-form")
-  .addEventListener("submit", async function (e) {
-    e.preventDefault();
-    const text = document.getElementById("todo-input").value.trim();
-    const tag = document.getElementById("todo-tag").value;
-    if (!text) return;
+// PROSES SIMPAN / EDIT KE DATABASE (CREATE / UPDATE)
+document.getElementById("todo-form").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const text = document.getElementById("todo-input").value.trim();
+  const tag = document.getElementById("todo-tag").value;
+  if (!text) return;
 
-    const bodyData = { text, tag, date: selectedDate };
-    if (editingTaskId !== null) {
-      bodyData.id = editingTaskId;
-    }
+  const payload = { text, tag, date: selectedDate };
+  if (editingTaskId !== null) {
+    payload.id = editingTaskId;
+  }
 
-    try {
-      const response = await fetch("api_tasks.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(bodyData),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        throw new Error("Response is not valid JSON");
-      }
-
-      const result = await response.json();
-
-      if (result.status === "success") {
+  fetch("api_tasks.php?action=save", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.status === "success") {
         document.getElementById("todo-input").value = "";
         resetFormMode();
-        fetchTodos(); // Refresh total data terbaru
+        loadTodos(); // Muat ulang data terbaru dari database
       } else {
-        console.error("Server error:", result.message || "Unknown error");
-        alert("Error: " + (result.message || "Gagal menyimpan data"));
+        alert("Gagal menyimpan tugas!");
       }
-    } catch (error) {
-      console.error("Gagal menyimpan data:", error);
-      alert("Error: " + error.message);
-    }
-  });
+    });
+});
 
 function editTask(id) {
-  const taskToEdit = todos.find((t) => t.id === id);
+  const taskToEdit = todos.find((t) => t.id == id);
   if (!taskToEdit) return;
 
   document.getElementById("todo-input").value = taskToEdit.text;
@@ -238,53 +211,36 @@ function resetFormMode() {
   }
 }
 
-// TOGGLE CHECKBOX STATUS (PUT KE DATABASE)
-async function toggleTask(id, currentStatus) {
-  try {
-    const response = await fetch("api_tasks.php", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: id, completed: !currentStatus }),
+// TOGGLE PROSES CHECKLIST (UPDATE STATUS KE DATABASE)
+function toggleTask(id, currentStatus) {
+  fetch("api_tasks.php?action=toggle", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id: id, completed: !currentStatus }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.status === "success") {
+        loadTodos();
+      }
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const result = await response.json();
-    if (result.status === "success") {
-      fetchTodos();
-    } else {
-      console.error("Server error:", result.message || "Unknown error");
-    }
-  } catch (error) {
-    console.error("Gagal memperbarui status:", error);
-  }
 }
 
-// HAPUS DATA (DELETE KE DATABASE)
-async function deleteTask(id) {
+// HAPUS DATA DARI DATABASE (DELETE)
+function deleteTask(id) {
   if (confirm("Hapus tugas ini?")) {
     if (editingTaskId === id) resetFormMode();
-    try {
-      const response = await fetch("api_tasks.php", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: id }),
+
+    fetch("api_tasks.php?action=delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: id }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
+          loadTodos();
+        }
       });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      if (result.status === "success") {
-        fetchTodos();
-      } else {
-        console.error("Server error:", result.message || "Unknown error");
-      }
-    } catch (error) {
-      console.error("Gagal menghapus data:", error);
-    }
   }
 }
