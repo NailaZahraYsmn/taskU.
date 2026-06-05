@@ -1,6 +1,6 @@
 <?php
 session_start();
-session_unset();    // Kosongkan semua data session
+session_unset();    // Kosongkan  data session
 session_destroy();  // Hancurkan session di server
 
 // Kirim respons balik ke JavaScript bahwa proses sukses
