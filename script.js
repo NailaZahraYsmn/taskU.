@@ -9,6 +9,31 @@ function formatDateKey(d = new Date()) {
 // tanggal aktif di kalender
 let selectedDate = formatDateKey();
 
+
+// =========================================
+// MODIFIKASI: Logika Fitur Light Mode
+// =========================================
+const themeToggle = document.getElementById("theme-toggle");
+const themeIcon = document.getElementById("theme-icon");
+
+// Cek preferensi tema pengguna di localStorage saat halaman pertama dimuat
+if (localStorage.getItem("lightMode") === "true") {
+  document.body.classList.add("light-mode");
+  themeIcon.classList.replace("bi-sun-fill", "bi-moon-stars-fill");
+}
+
+// Event listener untuk mendeteksi klik pada tombol tema
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("light-mode");
+  const isLightMode = document.body.classList.contains("light-mode");
+  localStorage.setItem("lightMode", isLightMode);
+  
+  if (isLightMode) {
+    themeIcon.classList.replace("bi-sun-fill", "bi-moon-stars-fill");
+  } else {
+    themeIcon.classList.replace("bi-moon-stars-fill", "bi-sun-fill");
+  }
+});
 // AMBIL DATA DARI DATABASE (READ)
 function loadTodos() {
   fetch("api_tasks.php?action=list")
