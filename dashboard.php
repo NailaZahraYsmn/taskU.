@@ -31,6 +31,13 @@ if (!isset($_SESSION['nama_user'])) {
         <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"/>
       </svg>
       <a class="navbar-brand bs-emphasis-color me-auto mx-lg-2" href="index.php" >taskU.</a>
+      <!-- MODIFIKASI: 5. Fitur Light Mode (Tombol Toggle) -->
+      <button class="btn btn-link text-accent me-3" id="theme-toggle" title="Ubah Tema">
+        <i class="bi bi-sun-fill" id="theme-icon" style="font-size: 1.2rem;"></i>
+      </button>
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">     
+      </div>
+
       <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">     
       </div>
       <!-- profile  -->
