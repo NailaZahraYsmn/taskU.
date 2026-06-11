@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Waktu pembuatan: 04 Jun 2026 pada 20.02
--- Versi server: 10.4.32-MariaDB
--- Versi PHP: 8.2.12
+-- Host: localhost:3306
+-- Generation Time: Jun 11, 2026 at 10:20 AM
+-- Server version: 8.4.3
+-- PHP Version: 8.3.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,73 +24,95 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `tasks`
+-- Table structure for table `tasks`
 --
 
 CREATE TABLE `tasks` (
-  `id` int(11) NOT NULL,
-  `username` varchar(11) NOT NULL,
+  `id` int NOT NULL,
+  `username` varchar(100) NOT NULL,
+  `user_id` int NOT NULL,
   `task_text` varchar(255) NOT NULL,
   `task_option` varchar(50) NOT NULL,
   `task_date` date NOT NULL,
-  `completed` tinyint(1) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `completed` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `tasks`
+--
+
+INSERT INTO `tasks` (`id`, `username`, `user_id`, `task_text`, `task_option`, `task_date`, `completed`) VALUES
+(5, '', 6, 'belanja', 'TAMBAHAN', '2026-06-06', 1),
+(6, '', 6, 'masak', 'PENTING', '2026-06-06', 1),
+(7, '', 6, 'olahraga', 'OPSIONAL', '2026-06-06', 1),
+(8, '', 6, 'belanja', 'PENTING', '2026-06-07', 1),
+(9, '', 6, 'masak', 'PENTING', '2026-06-04', 1),
+(10, 'atha', 6, 'belanja', 'TAMBAHAN', '2026-06-13', 1),
+(11, 'atha', 6, 'tidur', 'PENTING', '2026-06-19', 1);
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `user`
+-- Table structure for table `user`
 --
 
 CREATE TABLE `user` (
-  `id` int(11) NOT NULL,
+  `id` int NOT NULL,
   `email` varchar(100) NOT NULL,
-  `username` varchar(11) NOT NULL,
+  `username` varchar(100) NOT NULL,
   `password` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `user`
 --
+
+INSERT INTO `user` (`id`, `email`, `username`, `password`) VALUES
+(6, 'atha@gmail.com', 'atha', '81dc9bdb52d04dc20036dbd8313ed055'),
+(7, 'atha1@gmail.com', 'atha34', '81dc9bdb52d04dc20036dbd8313ed055');
+
 --
--- Indeks untuk tabel `tasks`
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tasks`
 --
 ALTER TABLE `tasks`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `tasks_ibfk_1` (`username`);
+  ADD KEY `user_id` (`user_id`);
 
 --
--- Indeks untuk tabel `user`
+-- Indexes for table `user`
 --
 ALTER TABLE `user`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`);
+  ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT untuk tabel yang dibuang
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT untuk tabel `tasks`
+-- AUTO_INCREMENT for table `tasks`
 --
 ALTER TABLE `tasks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT untuk tabel `user`
+-- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
+-- Constraints for dumped tables
 --
 
 --
--- Ketidakleluasaan untuk tabel `tasks`
+-- Constraints for table `tasks`
 --
 ALTER TABLE `tasks`
-  ADD CONSTRAINT `tasks_ibfk_1` FOREIGN KEY (`username`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `tasks_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
