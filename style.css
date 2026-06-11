@@ -521,3 +521,26 @@ body.light-mode .flatpickr-current-month .numInputWrapper input {
 .task-list-scroll::-webkit-scrollbar { width: 4px; }
 .task-list-scroll::-webkit-scrollbar-track { background: transparent; }
 .task-list-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* Styling untuk Input Group Search & Filter */
+.input-group-text.bg-input {
+  background-color: var(--bg-input);
+  border: 1px solid var(--border);
+  border-right: none;
+}
+.form-control.task-input {
+  border-left: none;
+}
+.form-select.task-tag-select {
+  background-color: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+.form-select.task-tag-select:focus {
+  border-color: var(--accent);
+  box-shadow: none;
+}
+
+body.light-mode {
+  --bg-base:        #F8FAFC;
+}

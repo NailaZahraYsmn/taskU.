@@ -91,31 +91,58 @@ if (!isset($_SESSION['nama_user'])) {
               </div>
             </form>
           </div>
-          <div class="task-list-scroll" id="task-list-container"></div>
+         <div class="task-list-scroll" id="task-list-container"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODIFIKASI: Fitur Search, Filter & Summary Baru -->
+<div class="container pb-4" style="max-width: 1200px; padding: 0 2rem;">
+  <div class="bottom-controls-container mt-2 mb-3">
+    <!-- Row untuk Search & Filter -->
+    <div class="row g-2 mb-3">
+      <div class="col-md-8">
+        <div class="input-group">
+          <span class="input-group-text bg-input border-secondary"><i class="bi bi-search" style="color: var(--text-muted);"></i></span>
+          <input type="text" id="search-task" class="form-control task-input" placeholder="Cari tugas...">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <select id="filter-status" class="form-select task-tag-select" style="height: 100%;">
+          <option value="ALL">Semua Tugas</option>
+          <option value="ACTIVE">Masih Berjalan</option>
+          <option value="COMPLETED">Sudah Selesai</option>
+          <option value="PENTING">Hanya Tugas Penting</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Row untuk Summary Box -->
+    <div class="task-summary-container row g-2 text-center">
+      <div class="col-4">
+        <div class="summary-box p-2 rounded" style="border-bottom: 3px solid var(--accent); cursor: default;">
+          <div class="summary-count" id="count-total">0</div>
+          <div class="summary-label" style="font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px;">TOTAL TUGAS</div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="summary-box p-2 rounded" style="border-bottom: 3px solid #f5a623; cursor: default;">
+          <div class="summary-count" id="count-active">0</div>
+          <div class="summary-label" style="font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px;">BERJALAN</div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="summary-box p-2 rounded" style="border-bottom: 3px solid #4ecdc4; cursor: default;">
+          <div class="summary-count" id="count-completed">0</div>
+          <div class="summary-label" style="font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px;">SELESAI</div>
         </div>
       </div>
     </div>
   </div>
-  <div class="task-summary-container row g-2 mb-3 text-center">
-  <div class="col-4">
-    <div class="summary-box urgency-tinggi-box p-2 rounded">
-      <div class="summary-count" id="count-tinggi">0</div>
-      <div class="summary-label" style="font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px;">PENTING</div>
-    </div>
-  </div>
-  <div class="col-4">
-    <div class="summary-box urgency-sedang-box p-2 rounded">
-      <div class="summary-count" id="count-sedang">0</div>
-      <div class="summary-label" style="font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px;">SEDANG</div>
-    </div>
-  </div>
-  <div class="col-4">
-    <div class="summary-box urgency-rendah-box p-2 rounded">
-      <div class="summary-count" id="count-rendah">0</div>
-      <div class="summary-label" style="font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px;">TAMBAHAN</div>
-    </div>
-  </div>
 </div>
+
+
   <!-- MODIFIKASI: 4. Fitur Notifikasi Buka Web / Reminder Mendekati Deadline -->
 <div class="toast-container position-fixed top-0 end-0 p-4" style="z-index: 1100; margin-top: 70px;">
   <div id="deadlineToast" class="toast shadow-lg border-0" role="alert" aria-live="assertive" aria-atomic="true">
