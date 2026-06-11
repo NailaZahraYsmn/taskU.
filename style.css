@@ -115,6 +115,30 @@ nav{
 }
 
 /* KOMPONEN DASHBOARD */
+/* =========================================
+   MODIFIKASI: Style Fitur Summary Tugas
+   ========================================= */
+.summary-box {
+  background-color: var(--bg-input);
+  border: 1px solid var(--border);
+  transition: all 0.3s ease-in-out;
+}
+.summary-count {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.summary-label {
+  color: var(--text-secondary);
+}
+.urgency-tinggi-box { border-bottom: 3px solid var(--danger) !important; color: var(--danger); }
+.urgency-sedang-box { border-bottom: 3px solid #f5a623 !important; color: #f5a623; }
+.urgency-rendah-box { border-bottom: 3px solid #4ecdc4 !important; color: #4ecdc4; }
+
+/* Penyesuaian warna background summary card saat Light Mode aktif */
+body.light-mode .summary-box {
+  background-color: #F1F5F9;
+}
 
 body.light-mode {
   --bg-base:        #F8FAFC;
@@ -354,6 +378,29 @@ body.light-mode .flatpickr-current-month .numInputWrapper input {
 }
 .flatpickr-day.today.has-task::after,
 .flatpickr-day.selected.has-task::after { background: #fff; }
+/* =========================================
+   MODIFIKASI: Penanda Kalender untuk Tugas Penting
+   ========================================= */
+.flatpickr-day.has-urgent-task { position: relative; }
+.flatpickr-day.has-urgent-task::after {
+  content: ''; 
+  position: absolute; 
+  bottom: 4px; 
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;   /* Sedikit lebih besar dari tugas biasa */
+  height: 5px;
+  background: var(--danger); /* Warna merah untuk urgensi tinggi */
+  border-radius: 50%;
+  box-shadow: 0 0 5px var(--danger); /* Efek cahaya/glow */
+}
+
+/* Penyesuaian saat tanggal penting tersebut diklik/hari ini */
+.flatpickr-day.today.has-urgent-task::after,
+.flatpickr-day.selected.has-urgent-task::after { 
+  background: #fff; 
+  box-shadow: 0 0 5px #fff;
+}
 
 /* ─── TASK CARD ─── */
 .task-card {
@@ -449,10 +496,6 @@ body.light-mode .flatpickr-current-month .numInputWrapper input {
   text-transform: uppercase; letter-spacing: .5px;
   padding: 2px 6px; border-radius: 4px;
 }
-.tag-penting  { background: rgba(224,92,106,.15);  color: var(--tag-penting); }
-.tag-opsional { background: rgba(245,166,35,.15);  color: var(--tag-opsional); }
-.tag-tambahan { background: rgba(78,205,196,.15);  color: var(--tag-tambahan); }
-
 .btn-edit, .btn-delete {
   background: none; 
   border: none;

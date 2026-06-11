@@ -81,7 +81,7 @@ if (!isset($_SESSION['nama_user'])) {
                 <div class="col-8">
                   <select id="todo-tag" class="task-tag-select">
                     <option value="PENTING">PENTING</option>
-                    <option value="OPSIONAL">OPSIONAL</option>
+                    <option value="OPSIONAL">SEDANG</option>
                     <option value="TAMBAHAN">TAMBAHAN</option>
                   </select>
                 </div>
@@ -96,7 +96,38 @@ if (!isset($_SESSION['nama_user'])) {
       </div>
     </div>
   </div>
-
+  <div class="task-summary-container row g-2 mb-3 text-center">
+  <div class="col-4">
+    <div class="summary-box urgency-tinggi-box p-2 rounded">
+      <div class="summary-count" id="count-tinggi">0</div>
+      <div class="summary-label" style="font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px;">PENTING</div>
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="summary-box urgency-sedang-box p-2 rounded">
+      <div class="summary-count" id="count-sedang">0</div>
+      <div class="summary-label" style="font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px;">SEDANG</div>
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="summary-box urgency-rendah-box p-2 rounded">
+      <div class="summary-count" id="count-rendah">0</div>
+      <div class="summary-label" style="font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px;">TAMBAHAN</div>
+    </div>
+  </div>
+</div>
+  <!-- MODIFIKASI: 4. Fitur Notifikasi Buka Web / Reminder Mendekati Deadline -->
+<div class="toast-container position-fixed top-0 end-0 p-4" style="z-index: 1100; margin-top: 70px;">
+  <div id="deadlineToast" class="toast shadow-lg border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header bg-danger text-white border-0">
+      <i class="bi bi-bell-fill me-2"></i>
+      <strong class="me-auto">Reminder Deadline!</strong>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body bg-white text-dark" id="deadline-list">
+    </div>
+  </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 

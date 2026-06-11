@@ -9,7 +9,6 @@ function formatDateKey(d = new Date()) {
 // tanggal aktif di kalender
 let selectedDate = formatDateKey();
 
-
 // =========================================
 // MODIFIKASI: Logika Fitur Light Mode
 // =========================================
@@ -42,6 +41,7 @@ function loadTodos() {
       todos = data;
       refreshCalendar();
       renderTaskPanel();
+      checkDeadlineReminders(); // Cek pengingat deadline setiap kali data dimuat
     })
     .catch((error) => console.error("Error load data:", error));
 }
@@ -84,12 +84,24 @@ function getTaskDates() {
 }
 
 // tandai tugas per hari di kalender
+// =================================================================
+// PERBAIKAN: Logika Penanda Kalender (Tanda Tidak Akan Hilang)
+// =================================================================
 function markDaysWithTasks(dObj, dStr, fpInstance, dayElem) {
-  if (getTaskDates().has(formatDateKey(dayElem.dateObj))) {
-    dayElem.classList.add("has-task");
+  const dateKey = formatDateKey(dayElem.dateObj);
+  const tasksOnDate = todos.filter(t => t.date === dateKey);
+  dayElem.classList.remove("has-task", "has-urgent-task");
+
+  if (tasksOnDate.length > 0) {
+    const hasUrgent = tasksOnDate.some(t => !t.completed && (t.tag.includes("TINGGI") || t.tag === "PENTING"));
+    
+    if (hasUrgent) {
+      dayElem.classList.add("has-urgent-task");
+    } else {
+      dayElem.classList.add("has-task");
+    }
   }
 }
-
 // konfigurasi flatpickr
 const fp = flatpickr("#main-calendar", {
   inline: true,
@@ -115,7 +127,7 @@ function refreshCalendar() {
 // format tanggal untuk tampilan
 function formatDate(dateStr) {
   const [y, m, d] = dateStr.split("-").map(Number);
-  return new Date(y, m, d).toLocaleDateString("id-ID", {
+  return new Date(y, m-1 , d).toLocaleDateString("id-ID", {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -152,7 +164,7 @@ function renderTaskPanel() {
     const tagClass =
       {
         PENTING: "tag-penting",
-        OPSIONAL: "tag-opsional",
+        SEDANG: "tag-opsional",
         TAMBAHAN: "tag-tambahan",
       }[todo.tag] || "tag-tambahan";
     const item = document.createElement("div");
@@ -267,5 +279,59 @@ function deleteTask(id) {
           loadTodos();
         }
       });
+  }
+}
+
+document.getElementById("progress-text").textContent = `${completedTasks}/${totalTasks} Selesai (${progressPercent}%)`;
+document.getElementById("task-progress-bar").style.width = `${progressPercent}%`;
+// MODIFIKASI: Hitung Data untuk Summary Tugas (Hanya menghitung tugas yg BELUM selesai)
+  const tinggiCount = filtered.filter(t => t.tag === "URGENSI TINGGI" && !t.completed).length;
+  const sedangCount = filtered.filter(t => t.tag === "URGENSI SEDANG" && !t.completed).length;
+  const rendahCount = filtered.filter(t => t.tag === "URGENSI RENDAH" && !t.completed).length;
+
+  // hasil hitungan ditampilkan di summary panel
+  document.getElementById("count-tinggi").textContent = tinggiCount;
+  document.getElementById("count-sedang").textContent = sedangCount;
+  document.getElementById("count-rendah").textContent = rendahCount;
+function checkDeadlineReminders() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Reset jam ke 00:00 agar hitungan hari akurat
+  
+  const targetDate = new Date(today);
+  targetDate.setDate(targetDate.getDate() + 2); // Rentang pantauan: Sampai H-2
+
+  // Filter tugas: Cari yang BELUM selesai DAN batas waktunya kurang dari/sama dengan H-2
+  const approachingTasks = todos.filter(t => {
+    if (t.completed) return false;
+    
+    const tDate = new Date(t.date);
+    tDate.setHours(0, 0, 0, 0);
+    
+    return tDate <= targetDate;
+  });
+
+  if (approachingTasks.length > 0) {
+    // Susun elemen list HTML untuk setiap tugas
+    let listHtml = `<p class="mb-2" style="font-size: 0.9rem;">Ada <strong>${approachingTasks.length} tugas</strong> yang butuh perhatianmu:</p><ul class="mb-0" style="padding-left: 18px;">`;
+    
+    approachingTasks.forEach(task => {
+      // Jika tag urgensinya tinggi, teksnya kita beri warna merah
+      const isUrgent = task.tag.includes("TINGGI") || task.tag === "PENTING";
+      const textStyle = isUrgent ? "color: var(--danger); font-weight: 600;" : "color: var(--text-muted);";
+      
+      listHtml += `<li style="font-size: 0.85rem; ${textStyle} margin-bottom: 4px;">
+                    ${escapeHtml(task.text)} 
+                    <span style="font-size: 0.7rem; display: block; color: var(--text-secondary);">Target: ${formatDate(task.date)}</span>
+                   </li>`;
+    });
+    listHtml += `</ul>`;
+
+    // Masukkan ke dalam HTML
+    document.getElementById("deadline-list").innerHTML = listHtml;
+    
+    // Tampilkan Toast tanpa autohide
+    const toastEl = document.getElementById("deadlineToast");
+    const toast = new bootstrap.Toast(toastEl, { autohide: false }); 
+    toast.show();
   }
 }
